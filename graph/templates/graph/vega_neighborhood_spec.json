@@ -1,0 +1,231 @@
+{% load user_agents %}{ "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "width": 450,
+    "height": 600,
+    "padding": 10,
+    "autosize": {"type": "pad", "resize": true, "contains": "padding"},
+    "usermeta": {
+        "embedOptions": {
+            "actions": {
+                "source": false,
+                "editor": false,
+                "export": {"svg": true, "png": true}
+            },
+            "downloadFileName": "{{ center_title }}",
+            "hover": false
+        }
+    },
+  
+    "config": {
+        "legend": {
+            "layout": {
+                "center": "true",
+                "orient": "none"
+            }
+        },
+        "events": {
+            "bind": "container",
+            "defaults": {"allow": true}
+        }
+    },
+
+    "data": [
+        {
+          "name": "node-data",
+          "values": {{ json_nodes|safe }}
+        },
+        {
+          "name": "link-data",
+          "values": {{ json_edges|safe }}
+        }
+      ],
+
+    "signals": [
+      { "name": "cx", "update": "width / 2" },
+      { "name": "cy", "update": "height / 2" },
+      { "name": "Freeze", "value": false,
+        "bind": {"input": "checkbox", "name": "Physics"} },
+      { "name": "Radius", "value": {% if request|is_touch_capable %}11{% else %}7{% endif %},
+        "bind": {"input": "range", "min": 1, "max": 25, "step": 1} },
+      { "name": "nbodyStrength", "value": -150,
+        "bind": {"input": "range", "min":-250, "max": 30, "step": 1, "name": "N-Body Strength"} },
+      { "name": "velocityDecay", "value": 0.7,
+        "bind": {"input": "range", "min": 0, "max": 1, "step": 0.01, "name": "Velocity Decay"} },
+      { "name": "linkDistance", "value": 160,
+        "bind": {"input": "range", "min": 0, "max": 400, "step": 1, "name": "Link Length"} },
+      { "name": "linkpathType", "value": "line",
+        "bind": {"input": "select", "options": ["line", "arc", "curve", "diagonal", "orthogonal"], "name": "Link Shape"} },
+      {
+        "description": "State variable for active node fix status.",
+        "name": "fix", "value": 0,
+        "on": [
+          {
+            "events": "symbol:mouseout[!event.buttons], window:mouseup",
+            "update": "0"
+          },
+          {
+            "events": "symbol:mouseover",
+            "update": "fix || 1"
+          },
+          {
+            "events": "[symbol:mousedown, window:mouseup] > window:mousemove!",
+            "update": "2", "force": true
+          },
+          {
+            "events": "symbol:touchcancel, symbol:touchend",
+            "update": "0"
+          },
+          {
+            "events": "symbol:touchstart",
+            "update": "fix || 1"
+          },
+          {
+            "events": "[symbol:touchstart, symbol:touchend] > symbol:touchmove!",
+            "update": "2", "force": true
+          }
+        ]
+      },
+      {
+        "description": "Graph node most recently interacted with.",
+        "name": "node", "value": null,
+        "on": [
+          {
+            "events": "symbol:mouseover",
+            "update": "fix === 1 ? item() : node"
+          },
+          {
+            "events": "symbol:touchstart",
+            "update": "fix === 1 ? item() : node"
+          }
+        ]
+      },
+      {
+        "description": "Flag to restart Force simulation upon data changes.",
+        "name": "restart", "value": false,
+        "on": [
+          {"events": {"signal": "fix"}, "update": "fix > 1"}
+        ]
+      }
+    ],
+  
+    "scales": [
+      {
+        "name": "colorDegree",
+        "type": "ordinal",
+        "domain": {"data": "node-data", "field": "adj", "sort": true},
+        "range": ["#f77f11", "#2878b4", "#aec7e8", "#f9bb79"]
+      },
+      {
+        "name": "nodeLabels",
+        "type": "ordinal",
+        "domain": ["Center", "Successor", "Predecessor", "Reciprocal"],
+        "range": ["#f77f11", "#2878b4", "#aec7e8", "#f9bb79"],
+      },
+      {
+        "name": "linkDegree",
+        "type": "ordinal",
+        "domain": {"data": "link-data", "field": "direction", "sort": true},
+        "range": ["#b3cde3", "#b3cde3", "#f1e2cd"]
+      }
+    ],
+    "legends": [
+      {
+        "fill": "nodeLabels",
+        "title": "Key",
+        "orient": "top",
+        "legendX": {"offset": 0},
+        "legendY": {"offset": 0},
+        "columns": 13,
+        "titleOrient": "left",
+        "titleFont": {"value": "Neucha"},
+        "titleFontSize": {"value": 14},
+        "labelFont": {"value": "Neucha"},
+        "labelFontSize": {"value": 14}
+      }
+    ],
+    "marks": [
+      {
+        "name": "nodes",
+        "type": "symbol",
+        "zindex": 1,
+  
+        "from": {"data": "node-data"},
+        "on": [
+          {
+            "trigger": "fix",
+            "modify": "node",
+            "values": "fix === 1 ? {fx:node.x, fy:node.y} : {fx:x(), fy:y()}"
+          },
+          {
+            "trigger": "!fix",
+            "modify": "node", "values": "{fx: null, fy: null}"
+          }
+        ],
+  
+        "encode": {
+          "enter": {
+            "fill": {"scale": "colorDegree", "field": "adj"},
+            "stroke": {"value": "#c7c7c7"}
+          },
+          "update": {
+            "size": {"signal": "2 * Radius * Radius"},
+            "cursor": {"value": "move"}
+          }
+        },
+  
+        "transform": [
+          {
+            "type": "force",
+            "iterations": 900,
+            "velocityDecay": {"signal": "velocityDecay"},
+            "restart": {"signal": "restart"},
+            "static": {"signal": "Freeze"},
+            "forces": [
+              {"force": "center", "x": {"signal": "cx"}, "y": {"signal": "cy"}},
+              {"force": "collide", "radius": {"signal": "Radius"}},
+              {"force": "nbody", "strength": {"signal": "nbodyStrength"}},
+              {"force": "link", "links": "link-data", "distance": {"signal": "linkDistance"}}
+            ]
+          }
+        ]
+      },
+      { "name": "labels",
+        "type": "text",
+        "zindex": 2,
+        "from": {"data": "nodes"},
+        "encode": {
+          "enter": {
+            "text": {"field": "datum.title"},
+            "font": {"value": "Neucha"},
+            "fillOpacity": {"value": 1},
+            "strokeOpacity": {"value": 1}
+          },
+          "update": {
+            "x": {"field": "x", "offset": {"signal": "(Radius)"}},
+            "y": {"field": "y", "offset": {"signal": "(Radius) - 12"}},
+            "align": {"value": "left"},
+            "fontSize": {"signal": "12 + (0.1 * Radius)"}
+          }
+        }
+      },
+      {
+        "type": "path",
+        "from": {"data": "link-data"},
+        "interactive": false,
+        "encode": {
+          "update": {
+            "stroke": {"scale": "linkDegree", "field": "direction"},
+            "strokeWidth": {"signal": "1 + (Radius) * (2 / 13)"},
+            "opacity": {"signal": "datum['direction'] === 'secondary' ? 0.3 : 0.8"}
+          }
+        },
+        "transform": [
+          {
+            "type": "linkpath",
+            "sourceX": "datum.source.x", "sourceY": "datum.source.y",
+            "targetX": "datum.target.x", "targetY": "datum.target.y",
+            "shape": {"signal": "linkpathType"}
+          }
+        ]
+      }
+    ]
+  }

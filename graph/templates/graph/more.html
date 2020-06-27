@@ -1,0 +1,112 @@
+{% extends 'graph/index.html' %}
+{% load static %}
+
+{% block maincontent %}
+
+
+<div class="container">
+
+    <div class="row pt-5">
+      <div class="col-md-8 mb-5">
+        <h3>About</h3>
+        <hr>
+        <p>The <a href="https://plato.stanford.edu/">Stanford Encyclopedia of Philosophy</a> provides a list of related entries at the bottom of each entry. These relations aren&rsquo;t always reciprocal (only 25 percent of these links are reciprocated). Sometimes, a more specific topic will link to a more general one, but not conversely (though often, the reason is less clear). These links form a <em>directed graph</em>, with the articles as <em>nodes</em> and the links as one-way <em>edges</em> connecting them.<p>
+
+        <p>You can start to get a sense of a large graph by asking about the paths you can trace through it. This site conducts a <a href="https://en.wikipedia.org/wiki/Breadth-first_search">breadth-first search</a> through this graph to find all shortest paths between any two nodes. You can do the same search ignoring that many links aren&rsquo;t reciprocated, often with interestingly different results.</p>
+        
+        <p>Graph visualization is notoriously difficult, but the <a href="https://vega.github.io/vega/">Vega</a> interactive visualization grammar I use on this site strikes a nice balance between expressiveness and ease of use.</p>
+
+        <p>There are many other excellent graph visualizations online, including in philosophy. I have collected some of these below. If you find more, <a href ="mailto:justin.reppert+pg@gmail.com?subject=Re:%20Philosophical%20Graphiti">let me know</a>! Let's increase the graph density of the internet!</p>
+        {% comment %} <a class="btn btn-primary btn-lg" href="#">About Me &raquo;</a> {% endcomment %}
+      </div>
+      <div class="col-md-4 mb-5">
+        <h2>By Justin Reppert</h2>
+        <hr>
+         I'm a Ph.D. candidate in philosophy at Fordham University. I study the philosophy of mathematics and phenomenology, with a strong side interest in computer science. This is my first web project.
+         <hr>
+         Visit my <a href="https://www.justinreppert.com">website</a> or <a href="https://github.com/reppertj">Github</a> profile
+        <address>
+          
+          <br>
+        </address>
+        <address>        
+          You can <a href ="mailto:justin.reppert+web@gmail.com?subject=Re:%20Philosophical%20Graphiti">email me</a> at justin.reppert at gmail.
+        </address>
+      </div>
+    </div>
+    <!-- /.row -->
+<h2>More like this</h2>
+        <hr>
+    <div class="row">
+      <div class="col-md-4 mb-5">
+        <div class="card h-100">
+          <img class="card-img-top" src="" alt="">
+          <div class="card-body">
+            <h4 class="card-title">Six Degrees of Francis Bacon</h4>
+            <p class="card-text">My first title for this project, &#8220;Six Degrees of Francis Bacon,&#8221; was already taken by the excellent historical social network reconstruction project of the same name.</p>
+          </div>
+          <div class="card-footer">
+            <a href="http://www.sixdegreesoffrancisbacon.com/" class="btn btn-primary">Visit</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-5">
+        <div class="card h-100">
+          <img class="card-img-top" src="" alt="">
+          <div class="card-body">
+            <h4 class="card-title">Six Degrees of Wikipedia</h4>
+            <p class="card-text">The original. Often ridiculous, always fun.</p>
+          </div>
+          <div class="card-footer">
+            <a href="https://www.sixdegreesofwikipedia.com/" class="btn btn-primary">Visit</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-5">
+        <div class="card h-100">
+          <img class="card-img-top" src="" alt="">
+          <div class="card-body">
+            <h4 class="card-title">Visualizing the Stanford Encyclopedia of Philosophy</h4>
+            <p class="card-text">Adam Edwards provides some interesting visualizations based on the Louvain community detection method for directed graphs at Visualizing the Stanford Encyclopedia of Philosophy.</p>
+          </div>
+          <div class="card-footer">
+            <a href="https://adamdedwards.github.io/sep-graph/" class="btn btn-primary">Visit</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.row -->
+
+   <!-- /.row -->
+    <div class="row">
+      <div class="col-md-4 mb-5">
+        <div class="card h-100">
+          <img class="card-img-top" src="" alt="">
+          <div class="card-body">
+            <h4 class="card-title">Structuring the Stanford Encyclopedia of Philosophy</h4>
+            <p class="card-text">Maximilian Noichl (University of Wien) applied a clustering algorithm called HDBSCAN on word frequencies to visualize clusters of related topics.</p>
+          </div>
+          <div class="card-footer">
+            <a href="https://homepage.univie.ac.at/maximilian.noichl/posts/structuring-the-stanford-encyclopedia-of-philosophy/" class="btn btn-primary">Visit</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-5">
+        <div class="card h-100">
+          <img class="card-img-top" src="" alt="">
+          <div class="card-body">
+            <h4 class="card-title">Directed Graph of SEP Related Entries</h4>
+            <p class="card-text">Mark Alfano and Moses Boudourides give you the largest strongly connected component of the graph at once. Yes, it's overwhelming, but zoom in!</p>
+          </div>
+          <div class="card-footer">
+            <a href="https://mboudour.github.io/2020/05/06/Graph-of-references-among-entries-of-the-Stanford-Encyclopedia-of-Philosophy.html" class="btn btn-primary">Visit</a>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container -->
+
+{% endblock maincontent %}

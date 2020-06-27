@@ -1,8 +1,6 @@
 import networkx as nx
 from networkx.exception import NetworkXNoPath
 
-from graph.utils.network import Network
-
 
 def all_shortest_paths(graph: nx.Graph, source: str, target: str):
     """Returns generator; raises NetworkXNoPath if no path"""
@@ -21,10 +19,13 @@ def n_shortest_paths(graph: nx.Graph, source: str, target: str):
 
 
 def result_string(graph: nx.Graph, source: str, target: str):
-    result = n_shortest_paths(graph, source, target)
-    string = "Found {} paths with {} degrees of separation.".format(*result)
+    n_paths, degrees = n_shortest_paths(graph, source, target)
     if source == target:
         string = "Well, that was easy!"
+    else:
+        path_word = "path" if n_paths == 1 else "paths"
+        degree_word = "degree" if degrees == 2 else "degrees"
+        string = f"Found {n_paths} {path_word} with {degrees - 1} {degree_word} of separation"    
     return string
 
 
@@ -41,13 +42,19 @@ def nbunch_of_shortest_paths(graph, source, target):
     return nbunch
 
 
-def induced_subgraph(graph, source: str, target: str):
+def edges_on_paths(paths):
+    return [(node, path[index + 1]) for path in paths for (index, node) in enumerate(path[:-1])]
+
+
+def directed_induced_subgraph(graph, source:str, target: str):
     """
-    Induced subgraph on nodes on shortest paths between source and target
-    Raises networkx.exception.NetworkXNoPath if no path
+    Induced subgraph on edges along shortest paths between source
+    and target. networkx.exception.NetworkXNoPath if no path
     """
     try:
-        nbunch = nbunch_of_shortest_paths(graph, source, target)
+        shortest_paths = all_shortest_paths(graph, source, target)
+        edges = edges_on_paths(shortest_paths)
+        subgraph = graph.edge_subgraph(edges)
     except NetworkXNoPath:
         raise
-    return graph.subgraph(nbunch)
+    return subgraph

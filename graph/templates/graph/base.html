@@ -1,18 +1,26 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="shortcut icon" type="image/png" href="{% static 'graph/favicon.ico' %}"/>
     <meta charset="utf-8">
-    {% block title %}
-    <title>Six Degrees of Francis Bacon</title>
-    {% endblock title %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}
+    Philosophical Graphiti
+    {% endblock title %}</title>
     {% block imports %}
     {% endblock imports %}
   </head>
-  <body>
-    {% block content %}
-    {% endblock content %}
 
-    {% block footer %}
-    {% endblock footer %}
-  </body>
+  {% block content %}
+  {% endblock content %}
+
+  {% block footer %}
+  {% endblock footer %}
+
+{% load google_analytics_tags %}
+<div style="display:none">
+    <img src="{% google_analytics %}" width="0" height="0" />
+</div>
+
 </html>

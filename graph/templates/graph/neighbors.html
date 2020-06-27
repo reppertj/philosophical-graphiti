@@ -1,0 +1,53 @@
+{% extends 'graph/result.html' %}
+{% debug %}
+
+{% load static %}
+{% load user_agents %}
+
+{% block title %}
+Graphiti: {{ center_title }}
+{% endblock title %}
+
+{% block forms %}
+<form action="/neighbors/" method="GET">
+<fieldset>
+{{ form.c.label_tag }} {{ form.c }} <input type="submit" class="btn btn-sm btn-info mt-2 ml-2" value="Submit" />
+</fieldset>
+         <a class="btn btn-sm btn-info mt-2" href="/neighbors" role="button" >Random</a>
+</form>
+{% endblock forms %}
+
+
+{% comment %} {{ sentence }} is passed to child result template {% endcomment %}
+{% block alt_sentence %}
+{% endblock alt_sentence %}
+
+{% block interaction_buttons %}
+{% endblock interaction_buttons %}
+
+{% block vega_spec %}
+var spec = {% include "graph/vega_neighborhood_spec.json" with center_title=center_title json_nodes=json_nodes json_edges=json_edges %};
+{% endblock vega_spec %}
+
+{% block results_tables %}
+<div class="container-fluid">
+<ul class="list-group justify-content-center">
+<li class="list-group-item list-group-item-primary d-flex justify-content-center align-items-start">
+        <div class="text-left"><a href={{ center_url }}>{{ center_title }}</a></div>
+</li>
+</ul>
+<div class "row">
+        <div class="list-group col-lg-12 bg-transparent border-0">
+            <div class="row">
+            {% for node in nodes %}
+                {% if node.adj != 0 %}
+                <div class="list-group-item col-xs-6 col-sm-4 col-md-3 m-1 border-0">
+                    <div class="text-left"><a href={{ node.url }}>{{ node.title }}</a></div>
+                </div>
+                {% endif %}        
+            {% endfor %}
+            </div>
+        </div>
+</div>
+</div>
+{% endblock results_tables %}

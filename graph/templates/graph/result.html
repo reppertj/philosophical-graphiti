@@ -1,47 +1,162 @@
-{% extends 'graph/base.html' %}
-{# Don't forget that one ! #}
+{% extends 'graph/index.html' %}
 {% load static %}
+{% load user_agents %}
 
-{% block content %}
-<div>
-    <form action="" method="GET">
-        {{ form.as_p }}
-        <table style="display: none">
-            {{ view.formset.empty_form }}
-        </table>
-        <table>
-            {{ view.formset }}
-        </table>
-        <input type="submit" />
-    </form>
+{% block title %}
+{% if random %}
+Random Philosophical Graphiti
+{% else %}
+Graphiti: {{ head_title }} to {{ tail_title }}
+{% endif %}
+{% endblock title %}
+
+{% block masthead %}
+{% endblock masthead %}
+
+{% block forms %}
+ <form action="/paths/" method="GET">
+<fieldset>
+{{ form.h.label_tag }} {{ form.h }} {{ form.t.label_tag}} {{ form.t }}
+</fieldset>
+<input type="submit" class="btn btn-md btn-info mt-3" value="How close are they?" />
+</form>
+{% endblock forms %}
+
+{% block interstitial %}
+
+{% if render_vega %}
+{% comment %} Import Vega {% endcomment %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vega/5.13.0/vega.min.js" integrity="sha256-5ANkOqHtTAtUSTOlF7znoJwGhGdGkzvgR+rrSFIpoFE=" crossorigin="anonymous"></script>
+{% comment %} Import Vega Embed {% endcomment %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.9.0/vega-embed.min.js" integrity="sha256-6lWPqwalQ3ZXNwmeOFofejP1vAT81I5N23ZzA4JE4hI=" crossorigin="anonymous"></script>
+<div class="container">
+{% endif %}
+
+        <div class="row justify-content-md-center pt-2">
+            <div class="col-md">
+            <h5>{{ sentence }}</h5>
+            </div>
+        </div>
+{% block alt_sentence %}
+{% if not render_vega %}
+        <div class="row justify-content-md-center pt-3">
+            <div class="col-md">
+            <h5>Get started at the <a href=https://plato.stanford.edu/> Stanford Encyclopedia of Philosophy</a>.</h5>
+            </div>
+        </div>
+{% endif %}
+{% endblock alt_sentence %}
+
+
+{% block interaction_buttons %}
+    <div class="row justify-content-md-center pb-4">
+
+        <div class="col-sm-auto pb-3">
+        <div class="btn-group">
+            <a class="btn btn-sm btn-info" data-toggle="button" aria-pressed="{% if not is_undirected %}true{% else %}false{% endif %}" autocomplete="off" href="/paths/?h={{ q_head }}&t={{ q_tail }}{% if not is_undirected %}&u=true{% endif %}">Directed (One-Way)</a>
+            <a class="btn btn-sm btn-info" data-toggle="button" aria-pressed="{% if is_undirected %}true{% else %}false{% endif %}" autocomplete="off" href="/paths/?h={{ q_head }}&t={{ q_tail }}{% if not is_undirected %}&u=true{% endif %}">Undirected (Two-Way)</a>
+        </div>
+        </div>
+
+        <div class="col-sm-auto pb-3">
+        <a class="btn btn-sm btn-info" role="button" href="/paths/?h={{ q_tail }}&t={{ q_head }}{% if is_undirected %}&u=true{% endif %}">Reverse</a>
+        </div>
+
+        <div class="col-sm-auto">
+        <a class="btn btn-sm btn-info" href="/random" role="button" >Random</a>
+        </div>
+
+    </div>
+{% endblock interaction_buttons %}
 </div>
-<p>{{result}}</p>
-<p>{{subg}}</p>
-{% endblock %}
+{% endblock interstitial %}
 
-{% block footer %}
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 
-{{ form.media }}
 
-<script>
-(function($) {
-    $('#add-form').click(function() {
-        var index = $('#id_inline_test_models-TOTAL_FORMS').val()
-        var newTable = $('#id_inline_test_models-__prefix__-DELETE').parents('table').clone()
-        newTable.find(':input').each(function() {
-            for (attr of ['name', 'id'])
-                $(this).attr(
-                    attr,
-                    $(this).attr(attr).replace('__prefix__', index)
-                )
-        })
-        newTable.insertBefore($(this))
-        $('#id_inline_test_models-TOTAL_FORMS').val(
-            parseInt($('#id_inline_test_models-TOTAL_FORMS').val()) + 1
-        )
-        newTable.slideDown()
-    })
-})($)
-</script>
-{% endblock %}
+
+{% block viz %}
+
+{% if request|is_mobile and not request|is_tablet %}
+
+<style type="text/css">
+    #warning-message { display: none; }
+    @media only screen and (orientation:portrait){
+        #wrapper { display:none; }
+        #warning-message { display:block; }
+    }
+    @media only screen and (orientation:landscape){
+        #warning-message { display:none; }
+    }
+</style>
+
+<div id="wrapper">
+    <!-- pass -->
+</div>
+<div id="warning-message">
+    <p><small>
+    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-phone-landscape" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" d="M1 4.5v6a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1zm-1 6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v6z"/>
+    <path fill-rule="evenodd" d="M14 7.5a1 1 0 1 0-2 0 1 1 0 0 0 2 0z"/>
+    </svg>
+        Better in landscape!
+    </small></p>
+</div>
+{% endif %}
+
+    {% if render_vega %}
+    <div class="container-fluid">
+    <div id="vis" style="width: 750px; margin: 0 auto;">
+    <script type="text/javascript">{% block vega_spec %}
+    var spec = "generate/{{ json_data_path }}";{% endblock vega_spec %}
+    vegaEmbed('#vis', spec).then(function(result) {
+        // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
+    </script>
+    </div>
+    </div>
+    {% endif %}
+{% endblock viz %}
+
+
+{% block tables %}
+
+{% if render_vega %}
+<div class="container">
+    <div class="row justify-content-md-center pb-3">
+        <div class="col-lg-auto">
+        Want more control? Try setting velocity decay to 1.
+        </div>
+    </div>
+
+    <div class="row justify-content-md-center pb-3">
+        <div class="col justify-content-sm-center">
+        <h5>Read about these connections at the&nbsp;<a href={{ paths.0.0.1 }}>Stanford Encyclopedia of Philosophy</a>:</h5>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% block results_tables %}
+<div class="container">
+<div class="row">
+    {% for path in paths %}
+        <div class="col-md-4">
+            <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <a href={{ path.0.1 }}>{{ path.0.0 }}</a>
+            </li>
+            {% for node in path %}
+                {% if not forloop.first %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="text-left"><a href={{ node.1 }}>{{ node.0 }}</a></div>
+                    <span class="badge badge-primary badge-pill">{{ forloop.counter|add:"-1" }}</span>
+                </li>
+                {% endif %}        
+            {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+</div>
+</div>
+{% endblock results_tables %}
+{% endblock tables %}
+

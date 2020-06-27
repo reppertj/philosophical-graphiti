@@ -1,4 +1,17 @@
+import os
+
 from django.db import models
+
+from graph.utils.network import Network
+
+GRAPH_JL_PATH = "utils/related.jl"
+RELATED_NODE_KEY = "related"
+
+# One time initialization of full_network object for use globally
+dirname = os.path.dirname(__file__)
+filename = os.path.join(dirname, GRAPH_JL_PATH)
+full_network = Network.from_jl(filename, RELATED_NODE_KEY)
+
 
 # Create your models here.
 class Node(models.Model):
@@ -12,10 +25,14 @@ class Node(models.Model):
     sep_url = models.URLField()
     pub_date = models.DateField(null=True)
     rev_date = models.DateField(null=True)
+    
+    # class Meta:
+    #     ordering = ['title']
 
 
 '''
 Edges are not currently supported in database; they are kept in memory in a Network object
+Partially because I'm using a free row-limited database service :) 
 '''
 # class Edge(models.Model):
 #     head = models.ForeignKey(Node, on_delete=models.PROTECT,
