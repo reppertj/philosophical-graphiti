@@ -15,13 +15,23 @@ NO_PATH_STRINGS = [("No path found! Here's your next paper title: "
 
 
 def results(source, target, is_undirected):
+    nw = full_network.g if is_undirected else full_network.dg
     try:
-        nw = full_network.g if is_undirected else full_network.dg
         subgraph = directed_induced_subgraph(nw, source, target)
         sentence = result_string(subgraph, source, target)
         paths = list(all_shortest_paths(subgraph, source, target))
         friendly_paths = get_friendly_paths(paths)
         render_vega = True
+        if is_undirected:
+            json_data_path = f"{source}_subgdata_{target}.json"
+        else:
+            json_data_path = f"{source}_subdgdata_{target}.json"
+    except nx.exception.NodeNotFound:
+        subgraph = directed_induced_subgraph(nw, source, target)
+        sentence = "That was easy!"
+        friendly_paths = [[[Node.objects.get(name=source).title, Node.objects.get(name=source).sep_url]]]
+        print(friendly_paths)
+        render_vega = False
         if is_undirected:
             json_data_path = f"{source}_subgdata_{target}.json"
         else:

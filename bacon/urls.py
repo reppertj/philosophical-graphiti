@@ -23,5 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
     re_path('djga/', include('google_analytics.urls')),
-    path('loaderio-a6835b730a78a1b0817b48d09474984e.txt', TemplateView.as_view(template_name="loaderio-a6835b730a78a1b0817b48d09474984e.txt", content_type="text/plain")),
+    re_path(r'^loaderio-a6835b730a78a1b0817b48d09474984e.txt', TemplateView.as_view(template_name="graph/loaderio-a6835b730a78a1b0817b48d09474984e.txt", content_type="text/plain")),
 ]

@@ -27,6 +27,13 @@
         "events": {
             "bind": "container",
             "defaults": {"allow": true}
+        },
+        "legend": {
+          "layout": {
+            "top": {
+              "anchor": "middle"
+            }
+          }
         }
     },
 
@@ -54,7 +61,7 @@
         "bind": {"input": "range", "min":-150, "max": 30, "step": 1, "name": "N-Body Strength"} },
       { "name": "velocityDecay", "value": 0.7,
         "bind": {"input": "range", "min": 0, "max": 1, "step": 0.01, "name": "Velocity Decay"} },
-      { "name": "linkDistance", "value": 90,
+      { "name": "linkDistance", "value": 100,
         "bind": {"input": "range", "min": 0, "max": 400, "step": 1, "name": "Link Length"} },
       { "name": "linkpathType", "value": "line",
         "bind": {"input": "select", "options": ["line", "arc", "curve", "diagonal", "orthogonal"], "name": "Link Shape"} },
@@ -123,15 +130,19 @@
       {
         "fill": "colorDegree",
         "title": "Degree",
-        "orient": "top",
-        "legendX": {"offset": 0},
-        "legendY": {"offset": 0},
-        "columns": 13,
+        "orient": "none",
+        "direction": "horizontal",
         "titleOrient": "left",
         "titleFont": {"value": "Neucha"},
         "titleFontSize": {"value": 14},
         "labelFont": {"value": "Neucha"},
-        "labelFontSize": {"value": 14}
+        "labelFontSize": {"value": 14},
+        "encode": {
+          "legend": {
+            "update": {
+              "y": {"signal": "-1 * height / 2 + 150"}}
+          }
+        }
       }
     ],
     "marks": [

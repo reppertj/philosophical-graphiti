@@ -32,7 +32,6 @@ class Node(models.Model):
 
 '''
 Edges are not currently supported in database; they are kept in memory in a Network object
-Partially because I'm using a free row-limited database service :) 
 '''
 # class Edge(models.Model):
 #     head = models.ForeignKey(Node, on_delete=models.PROTECT,

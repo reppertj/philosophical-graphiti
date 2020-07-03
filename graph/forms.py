@@ -19,7 +19,7 @@ class CenterForm(forms.Form):
             attrs={
                 #'data-placeholder': 'Autocomplete ...',
                 'allow-clear': True,
-                'data-minimum-input-length': 1,
+                'data-minimum-input-length': 2,
                 'data-html': True,
             },
         )
@@ -40,7 +40,7 @@ class NodeForm(forms.Form):
             attrs={
                 #'data-placeholder': 'Autocomplete ...',
                 'allow-clear': True,
-                'data-minimum-input-length': 1,
+                'data-minimum-input-length': 2,
                 'data-html': True,
             },
         )
@@ -54,7 +54,7 @@ class NodeForm(forms.Form):
             attrs={
                 #'data-placeholder': 'Autocomplete ...',
                 'allow-clear': True,
-                'data-minimum-input-length': 1,
+                'data-minimum-input-length': 2,
                 'data-html': True,
             },
         )

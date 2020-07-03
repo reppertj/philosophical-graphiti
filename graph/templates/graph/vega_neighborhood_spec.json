@@ -10,21 +10,22 @@
                 "editor": false,
                 "export": {"svg": true, "png": true}
             },
-            "downloadFileName": "{{ center_title }}",
+            "downloadFileName": "{{ center_name }}",
             "hover": false
         }
     },
   
     "config": {
-        "legend": {
-            "layout": {
-                "center": "true",
-                "orient": "none"
-            }
-        },
         "events": {
             "bind": "container",
             "defaults": {"allow": true}
+        },
+        "legend": {
+          "layout": {
+            "top": {
+              "anchor": "middle"
+            }
+          }
         }
     },
 
@@ -118,7 +119,7 @@
         "name": "nodeLabels",
         "type": "ordinal",
         "domain": ["Center", "Successor", "Predecessor", "Reciprocal"],
-        "range": ["#f77f11", "#2878b4", "#aec7e8", "#f9bb79"],
+        "range": ["#f77f11", "#2878b4", "#aec7e8", "#f9bb79"]
       },
       {
         "name": "linkDegree",
@@ -131,15 +132,20 @@
       {
         "fill": "nodeLabels",
         "title": "Key",
-        "orient": "top",
-        "legendX": {"offset": 0},
-        "legendY": {"offset": 0},
-        "columns": 13,
-        "titleOrient": "left",
+        "bounds": "full",
+        "orient": "none",
+        "direction": "horizontal",
+        "titleOrient": {"value": "left"},
         "titleFont": {"value": "Neucha"},
         "titleFontSize": {"value": 14},
         "labelFont": {"value": "Neucha"},
-        "labelFontSize": {"value": 14}
+        "labelFontSize": {"value": 14},
+        "encode": {
+          "legend": {
+            "update": {
+              "y": {"signal": "-1 * height / 2 + 150"}}
+          }
+        }
       }
     ],
     "marks": [
@@ -215,7 +221,7 @@
           "update": {
             "stroke": {"scale": "linkDegree", "field": "direction"},
             "strokeWidth": {"signal": "1 + (Radius) * (2 / 13)"},
-            "opacity": {"signal": "datum['direction'] === 'secondary' ? 0.3 : 0.8"}
+            "opacity": {"signal": "datum['direction'] === 'secondary' ? 0.4 : 0.8"}
           }
         },
         "transform": [

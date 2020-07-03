@@ -26,7 +26,7 @@ Graphiti: {{ center_title }}
 {% endblock interaction_buttons %}
 
 {% block vega_spec %}
-var spec = {% include "graph/vega_neighborhood_spec.json" with center_title=center_title json_nodes=json_nodes json_edges=json_edges %};
+var spec = {% include "graph/vega_neighborhood_spec.json" with center_name=center_name json_nodes=json_nodes json_edges=json_edges %};
 {% endblock vega_spec %}
 
 {% block results_tables %}

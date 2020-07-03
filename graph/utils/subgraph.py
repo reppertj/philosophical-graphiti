@@ -1,5 +1,5 @@
 import networkx as nx
-from networkx.exception import NetworkXNoPath
+from networkx.exception import NetworkXNoPath, NodeNotFound
 
 
 def all_shortest_paths(graph: nx.Graph, source: str, target: str):
@@ -13,16 +13,16 @@ def n_shortest_paths(graph: nx.Graph, source: str, target: str):
         paths = list(all_shortest_paths(graph, source, target))
         n_paths = len(paths)
         degrees = len(paths[0])
-    except NetworkXNoPath:
+    except (NetworkXNoPath, NodeNotFound):
         n_paths, degrees = (0, 0)
     return n_paths, degrees
 
 
 def result_string(graph: nx.Graph, source: str, target: str):
-    n_paths, degrees = n_shortest_paths(graph, source, target)
     if source == target:
         string = "Well, that was easy!"
     else:
+        n_paths, degrees = n_shortest_paths(graph, source, target)
         path_word = "path" if n_paths == 1 else "paths"
         degree_word = "degree" if degrees == 2 else "degrees"
         string = f"Found {n_paths} {path_word} with {degrees - 1} {degree_word} of separation"    
@@ -57,4 +57,6 @@ def directed_induced_subgraph(graph, source:str, target: str):
         subgraph = graph.edge_subgraph(edges)
     except NetworkXNoPath:
         raise
+    if source == target:
+        subgraph = nx.induced_subgraph(graph, source)
     return subgraph
