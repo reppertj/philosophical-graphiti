@@ -7,7 +7,7 @@ import pandas as pd
 
 from graph.utils.network import Network
 
-GRAPH_JSON_PATH = '../utils/related.jl'
+GRAPH_JSON_PATH = '../utils/related.jsonl'
 RELATED_NODE_KEY = 'related'
 
 def init_network(path):
