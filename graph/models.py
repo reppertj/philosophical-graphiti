@@ -4,7 +4,7 @@ from django.db import models
 
 from graph.utils.network import Network
 
-GRAPH_JL_PATH = "utils/related.jsonl"
+GRAPH_JL_PATH = "utils/20100710_related.jsonlines"
 RELATED_NODE_KEY = "related"
 
 # One time initialization of full_network object for use globally
@@ -18,7 +18,7 @@ class Node(models.Model):
     '''
     For convenience and display only; not used for network analysis
     and not the authoritative source. Must be migrated from the Network object,
-    which is read from a serialized file (currently .jl) and kept in memory
+    which is read from a serialized file (currently .jsonlines) and kept in memory
     '''
     name = models.CharField(max_length=80, primary_key=True)
     title = models.CharField(max_length=200)

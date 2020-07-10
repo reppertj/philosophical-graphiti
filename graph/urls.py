@@ -9,32 +9,32 @@ urlpatterns = [
     path('more', cache_page(60 * 120)(views.more), name='more'),
     re_path(
         r'^node-autocomplete/$',
-        cache_page(60 * 15)(views.NodeAutocomplete.as_view()),
+        views.NodeAutocomplete.as_view(),
         name='node-autocomplete',
     ),
     re_path(
         r'^.*generate/(?P<source>.*)_sub(?P<directed_value>dg|g)data_(?P<target>.*).json',
-        cache_page(60 * 15)(views.vega_spec),
+        cache_page(60 * 5)(views.vega_spec),
         name='vega_spec'
     ),
     re_path(
         r'^paths/(?P<source>.*)_sub(?P<directed_value>dg|g)data_(?P<target>.*).json',
-        cache_page(60 * 15)(views.subgraph_json),
+        cache_page(60 * 5)(views.subgraph_json),
         name='subgraph_json'
     ),
     re_path(
         r'^paths/',
-        cache_page(60 * 15)(views.result),
+        cache_page(60 * 5)(views.result),
         name='result',
     ),
     re_path(
         r'^(?P<source>.*)_sub(?P<directed_value>dg|g)data_(?P<target>.*).json',
-        cache_page(60 * 15)(views.subgraph_json),
+        cache_page(60 * 5)(views.subgraph_json),
         name='subgraph_json'
     ),
     re_path(
         r'^neighbors/\?',
-        cache_page(60 * 15)(views.neighbors),
+        cache_page(60 * 5)(views.neighbors),
         name='neighbors_query',
     ),
     re_path(
