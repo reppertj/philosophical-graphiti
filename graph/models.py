@@ -4,7 +4,7 @@ from django.db import models
 
 from graph.utils.network import Network
 
-GRAPH_JL_PATH = "utils/20100710_related.jsonlines"
+GRAPH_JL_PATH = "utils/20201003_related.jsonlines"
 RELATED_NODE_KEY = "related"
 
 # One time initialization of full_network object for use globally
